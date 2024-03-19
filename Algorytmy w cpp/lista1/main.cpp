@@ -9,7 +9,7 @@ using namespace std;
 void insertionSort(vector<int> &arr, long long &comparisons) {
     int n = arr.size();
     for (int i = 1; i < n; i++) {
-        int key = arr[i];
+        int key = arr[i]; // aktualna liczba sortowana
         int j = i - 1;
 
         // Porównanie i przesunięcie elementów
@@ -69,10 +69,10 @@ int main() {
     insertionSort(numbers, comparisons);
 
     cout << "Posortowane liczby: ";
-    for (int num : numbers) {
+    for (int num: numbers) {
         cout << num << " ";
     }
-    cout << "\nLiczba porównań: " << comparisons << endl;
+    cout << "\nLiczba porownan: " << comparisons << endl;
 
     // Obliczanie i wyświetlanie wartości a
     double a = static_cast<double>(comparisons) / (numbers.size() * numbers.size());
