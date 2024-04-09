@@ -9,23 +9,25 @@ using namespace std;
 using namespace std::chrono;
 
 // Funkcja do wypisywania elementów wektora
-void printArray(const vector<int>& arr, int limit = 50) {
-    for (int i = 0; i < min(limit, (int)arr.size()); i++) {
+void printArray(const vector<int> &arr, int limit = 50) {
+    for (int i = 0; i < min(limit, (int) arr.size()); i++) {
         cout << arr[i] << " ";
     }
     cout << endl;
 }
 
 // Funkcja scalająca dwie posortowane części wektora
-void merge(vector<int>& arr, int left, int mid, int right, long long& comparisons) {
+void merge(vector<int> &arr, int left, int mid, int right, long long &comparisons) {
     int n1 = mid - left + 1;
     int n2 = right - mid;
     vector<int> L(n1), R(n2);
 
-    for (int i = 0; i < n1; i++)
+    for (int i = 0; i < n1; i++) {
         L[i] = arr[left + i];
-    for (int j = 0; j < n2; j++)
+    }
+    for (int j = 0; j < n2; j++) {
         R[j] = arr[mid + 1 + j];
+    }
 
     int i = 0;
     int j = 0;
@@ -57,7 +59,7 @@ void merge(vector<int>& arr, int left, int mid, int right, long long& comparison
 }
 
 // Główna funkcja algorytmu sortowania przez scalanie
-void mergeSort(vector<int>& arr, int left, int right, long long& comparisons) {
+void mergeSort(vector<int> &arr, int left, int right, long long &comparisons) {
     if (left < right) {
         int mid = left + (right - left) / 2;
         mergeSort(arr, left, mid, comparisons);
@@ -73,16 +75,17 @@ vector<int> generateRandomArray(int size) {
     mt19937 gen(rd());
     uniform_int_distribution<> dis(1, 1000000); // Zakres wartości od 1 do 1000000
 
-    for (int& element : arr) {
+    for (int &element: arr) {
         element = dis(gen);
     }
     return arr;
 }
 
-// Główna funkcja programu
 int main() {
     int n = 100000; // Rozmiar ciągu do sortowania
-    vector<int> arr = generateRandomArray(n);
+    // vector<int> arr = generateRandomArray(n);
+
+    vector<int> arr = {2, 8, 7, 1, 3, 5, 6, 4};
     long long comparisons = 0; // Licznik porównań
 
     auto start = high_resolution_clock::now();
@@ -93,11 +96,39 @@ int main() {
     printArray(arr);
 
     auto duration = duration_cast<microseconds>(stop - start);
-    double c = (double)comparisons / (n * log2(n));
+    double c = (double) comparisons / (n * log2(n));
 
     cout << "Czas działania algorytmu: " << duration.count() << " mikrosekund" << endl;
     cout << "Ilość porównań: " << comparisons << endl;
     cout << "Wartość ilorazu c = t/(n*log(n)): " << c << endl;
-    
+
+    int iterations = 10; // Liczba iteracji
+    double totalC = 0; // Suma ilorazów c dla wszystkich iteracji
+
+    for (int iter = 0; iter < iterations; iter++) {
+        vector<int> arr = generateRandomArray(n);
+        long long comparisons = 0; // Licznik porównań
+
+        auto start = high_resolution_clock::now();
+        mergeSort(arr, 0, arr.size() - 1, comparisons);
+        auto stop = high_resolution_clock::now();
+
+        // Opcjonalnie, wyświetl posortowany ciąg lub inne dane dla każdej iteracji
+        // cout << "Iteracja " << iter + 1 << ": ";
+        // printArray(arr, 50); // Wyświetl tylko pierwsze 50 elementów
+
+        auto duration = duration_cast<microseconds>(stop - start);
+        double c = (double) comparisons / (n * log2(n));
+
+        cout << "Iteracja " << iter + 1 << ": Czas = " << duration.count() << " mikrosekund, "
+             << "Porównania = " << comparisons << ", c = " << c << endl;
+
+        totalC += c;
+    }
+
+    double averageC = totalC / iterations; // Oblicz średnią wartość c
+
+    cout << "Średnia wartość c z " << iterations << " iteracji: " << averageC << endl;
+
     return 0;
 }
